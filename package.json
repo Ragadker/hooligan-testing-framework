@@ -4,6 +4,9 @@
   "type": "module",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "htf": "./bin/htf.js"
+  },
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
