@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { listProjects, runProjectTests } from '../lib/index.js';
+import {
+  listProjects,
+  runProjectTests,
+  getHistory,
+  getRun
+} from '../lib/index.js';
 
 const program = new Command();
 
@@ -103,6 +108,99 @@ program
           status: 'errored',
           error: error.message
         });
+      } else {
+        outputText(`Error: ${error.message}`);
+      }
+
+      process.exitCode = 1;
+    }
+  });
+program
+  .command('history')
+  .description('Show recent test runs')
+  .argument('[project]', 'Optional project name')
+  .action((projectName) => {
+    const jsonMode = program.opts().json;
+
+    try {
+      const runs = getHistory(projectName ?? null);
+
+      if (jsonMode) {
+        outputJson({ runs });
+        return;
+      }
+
+      if (runs.length === 0) {
+        outputText('No runs found.');
+        return;
+      }
+
+      outputText('Recent runs:');
+
+      for (const run of runs) {
+        outputText(
+          `- ${run.id} | ${run.project_name} | ${run.status} | ${run.started_at}`
+        );
+      }
+    } catch (error) {
+      if (jsonMode) {
+        outputJson({ status: 'errored', error: error.message });
+      } else {
+        outputText(`Error: ${error.message}`);
+      }
+
+      process.exitCode = 1;
+    }
+  });
+
+program
+  .command('show')
+  .description('Show full results for a specific run')
+  .argument('<run-id>', 'Run ID')
+  .action((runId) => {
+    const jsonMode = program.opts().json;
+
+    try {
+      const run = getRun(runId);
+
+      if (!run) {
+        if (jsonMode) {
+          outputJson({ status: 'not_found', error: 'Run not found.' });
+        } else {
+          outputText('Run not found.');
+        }
+
+        process.exitCode = 1;
+        return;
+      }
+
+      if (jsonMode) {
+        outputJson(run);
+        return;
+      }
+
+      outputText(`Run ID: ${run.id}`);
+      outputText(`Project: ${run.project_name}`);
+      outputText(`Status: ${run.status}`);
+      outputText(`Started: ${run.started_at}`);
+      outputText(`Ended: ${run.ended_at}`);
+      outputText(`Duration: ${run.duration_ms}ms`);
+
+      outputText('');
+      outputText('Results:');
+
+      for (const result of run.results) {
+        outputText(
+          `- ${result.status.toUpperCase()} | ${result.test_name} | ${result.duration_ms}ms`
+        );
+
+        if (result.error_message) {
+          outputText(`  Error: ${result.error_message}`);
+        }
+      }
+    } catch (error) {
+      if (jsonMode) {
+        outputJson({ status: 'errored', error: error.message });
       } else {
         outputText(`Error: ${error.message}`);
       }
