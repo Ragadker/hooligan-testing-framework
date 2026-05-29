@@ -107,3 +107,15 @@ The CLI returns exit codes based on test results:
 
 The --json option outputs machine-readable JSON for automation or scripting.
 By default, the CLI outputs human-readable text.
+
+## Start the admin API server
+
+```bash
+htf serve
+```
+
+Starts the Express backend API.
+
+### Custom port
+
+htf serve --port 4000

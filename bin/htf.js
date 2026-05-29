@@ -7,6 +7,7 @@ import {
   getHistory,
   getRun
 } from '../lib/index.js';
+import { startServer } from '../web/server.js';
 
 const program = new Command();
 
@@ -207,6 +208,15 @@ program
 
       process.exitCode = 1;
     }
+  });
+
+program
+  .command('serve')
+  .description('Start the admin web API')
+  .option('-p, --port <port>', 'Port to run the server on')
+  .action((options) => {
+    const port = options.port ? Number(options.port) : undefined;
+    startServer(port);
   });
 
 program.parse(process.argv);
