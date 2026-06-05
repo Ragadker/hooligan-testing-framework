@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard | HTF</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Hooligan Testing Framework</h1>
+    </header>
+
+    <main>
+      <h2>Registered Projects</h2>
+
+      <% if (projects.length === 0) { %>
+        <p>No projects registered.</p>
+      <% } %>
+
+      <div class="card-grid">
+        <% projects.forEach((project) => { %>
+          <section class="card">
+            <h3>
+              <a href="/projects/<%= project.name %>"><%= project.name %></a>
+            </h3>
+
+            <p><strong>Base URL:</strong> <%= project.baseUrl %></p>
+            <p><strong>Test Directory:</strong> <%= project.testDir %></p>
+
+            <% if (project.latestRun) { %>
+              <p>
+                <strong>Last Status:</strong>
+                <span class="status <%= project.latestRun.status %>">
+                  <%= project.latestRun.status %>
+                </span>
+              </p>
+              <p>
+                <a href="/runs/<%= project.latestRun.id %>">View latest run</a>
+              </p>
+            <% } else { %>
+              <p><strong>Last Status:</strong> No runs yet</p>
+            <% } %>
+          </section>
+        <% }) %>
+      </div>
+    </main>
+  </body>
+</html>

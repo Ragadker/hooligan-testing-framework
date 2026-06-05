@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Run Details | HTF</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Hooligan Testing Framework</h1>
+      <a href="/">Back to Dashboard</a>
+    </header>
+
+    <main>
+      <h2>Run Details</h2>
+
+      <section class="card">
+        <p><strong>Run ID:</strong> <%= run.id %></p>
+        <p><strong>Project:</strong> <%= run.project_name %></p>
+        <p>
+          <strong>Status:</strong>
+          <span class="status <%= run.status %>"><%= run.status %></span>
+        </p>
+        <p><strong>Started:</strong> <%= run.started_at %></p>
+        <p><strong>Ended:</strong> <%= run.ended_at %></p>
+        <p><strong>Duration:</strong> <%= run.duration_ms %>ms</p>
+
+        <% if (run.error) { %>
+          <p><strong>Error:</strong> <%= run.error %></p>
+        <% } %>
+      </section>
+
+      <h3>Test Results</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>Status</th>
+            <th>Duration</th>
+            <th>Error Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% run.results.forEach((result) => { %>
+            <tr>
+              <td><%= result.test_name %></td>
+              <td>
+                <span class="status <%= result.status %>"><%= result.status %></span>
+              </td>
+              <td><%= result.duration_ms %>ms</td>
+              <td>
+                <% if (result.error_message) { %>
+                  <details>
+                    <summary>View error</summary>
+                    <pre><%= result.error_message %></pre>
+                  </details>
+                <% } else { %>
+                  No error
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
