@@ -12,7 +12,8 @@
     "test:headed": "playwright test --headed",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "demo:runner": "node scripts/demo-runner.js"
+    "demo:runner": "node scripts/demo-runner.js",
+    "sample-app": "node examples/sample-app/server.js"
   },
   "keywords": [],
   "author": "",
